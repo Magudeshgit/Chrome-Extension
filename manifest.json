@@ -1,0 +1,14 @@
+{
+    "name": "BrowseWind",
+    "description": "Restore your browsing tabs across devices",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action":
+    {
+        "default_popup": "index.html"
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' 'unsafe-inline' https://www.gstatic.com"
+    }
+
+}
