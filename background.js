@@ -1,5 +1,7 @@
-chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+chrome.runtime.onMessage.addListener((message,sender)=>{
     if (message.target == "BACKGROUND" && message.content == "START_AUTHENTICATION") Initialize_Authentication();
+    if (message.target == "BACKGROUND" && message.content == "AUTHENTICATION_COMPLETED") Process_Auth_Complete(message);
+    if (message.target == "BACKGROUND" && message.content == "CHECK_AUTH_STATE") Check_Auth_State_Persistence();
 })
 
 async function offscreen_exists()
@@ -28,9 +30,24 @@ async function Initialize_Authentication()
     }
     else
     {
-        // const doc = 
-        console.log("holaa", await create_offscreen())
-        chrome.runtime.sendMessage({"content": "START_AUTHENTICATION", "target": "OFFSCREEN"})
+        await create_offscreen()
+        const iniitiaiting_auth = await chrome.runtime.sendMessage({"content": "START_AUTHENTICATION", "target": "OFFSCREEN"})   
 
     }
+}
+async function Process_Auth_Complete(message, sendResponse)
+{
+    console.log("messagesend", message)
+    message.target = "POPUP"
+    chrome.offscreen.closeDocument();
+    chrome.runtime.sendMessage(message)
+}
+
+async function Check_Auth_State_Persistence()
+{
+    if (!(await offscreen_exists()))
+    {
+        await create_offscreen()
+    }
+    chrome.runtime.sendMessage({target: "OFFSCREEN", content: "CHECK_AUTH_STATE"})
 }
