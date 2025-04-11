@@ -3,16 +3,23 @@
     "description": "Restore your browsing tabs across devices",
     "version": "1.0",
     "manifest_version": 3,
-    "action":
-    {
-        "default_popup": "index.html"
-    },
+  
     "background": {
         "service_worker": "background.js"
     },
+      "action":
+    {
+        "default_popup": "index.html"
+    },
     "permissions": [
-        "offscreen"
+        "offscreen",
+        "sidePanel",
+        "storage"
     ],
+    "side_panel": 
+    {
+        "default_path": "index.html"
+    },
     "content_security_policy": {
         "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
     }
