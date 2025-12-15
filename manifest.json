@@ -24,6 +24,12 @@
     "web_accessible_resources": [{
         "resources": ["offscreen.html"],
         "matches": ["<all_urls>"]
-      }]
+      }],
+    "icons": {
+        "16": "bwlogo.svg",
+        "32": "bwlogo.svg",
+        "48": "bwlogo.svg",
+        "128": "bwlogo.svg"
+    }
     
 }

@@ -1,7 +1,11 @@
 import { useEffect, useState, useContext, createContext } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, replace } from "react-router";
+
 
 const AuthContext = createContext(null)
+const AUTHLOGIN = "http://127.0.0.1:7000/api/oauth_checklogin/"
+const AUTHCREATE = "http://127.0.0.1:7000/api/oauthcreateuser/"
+const APPPASSWORD = "23a89c82f44bb2bb657d2074da6dcffc57c824bb"
 
 export function AuthProvider({children})
 {
@@ -22,20 +26,43 @@ export function AuthProvider({children})
 
     function start_auth_procedure() {
         chrome.storage.local.get('user', async (response)=>{
-            console.log("B:AH", response)
             if (response.user === undefined)
             {
-                console.log("NO AUTH")
                 return navigate('/auth')
-                // chrome.runtime.sendMessage({target: "BACKGROUND", content: "START_AUTHENTICATION"})
             }
             else
             {
-                console.log(response)
-                setauthData({
-                    authenticated: true,
-                    user: response.user
+                const apiresponse = fetch(AUTHLOGIN, {
+                    method: "post",
+                    body : JSON.stringify(
+                        {"app_key": `a0PUJ0PtiQb1rkuSZgybSHg1zt81elqJ`,
+                        "session_id": "rmcwr0nuin1dewumn2l9438fkw5s7xlg"}
+                    ),
+                    headers: {
+                        "Authorization": `Token ${APPPASSWORD}`,
+                        "Content-Type": 'application/json'
+                    }
                 })
+                apiresponse.then(e=>{
+                    if (e.ok)
+                    {
+                        e.json().then(f=>{
+                        setauthData({
+                            authenticated: true,
+                            user: {
+                                fullname: f.first_name,
+                                mail: f.email,
+                                photoURL: f.oauth_credentials.photoURL
+                            }
+                        })
+                        })
+                    }
+                    else
+                    {
+                        return navigate('/auth')
+                    }
+                }).catch(e=>console.log("error"))
+
             }
         })
     }
@@ -57,13 +84,12 @@ export function useAuth() {
 export function RequireAuth({children})
 {
     const {authData} = useAuth()
-    const navigate = useNavigate()
     if (authData.authenticated === false)
     {
-        return navigate('/auth')
+        replace('/auth')
     }
     else
     {
         return children
     }
-}
+}   

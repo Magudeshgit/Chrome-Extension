@@ -48,7 +48,10 @@ async function Process_Auth_Complete(message, sendResponse)
     // console.log("messagesend", message)
     chrome.offscreen.closeDocument();
     console.log(message)
-    if (message.error) return;
+    if (message.error) {
+        chrome.runtime.sendMessage({target: "POPUP", content: "AUTH_FAILED"})
+        return
+    };
 
     const userObj = {
         user: {
@@ -58,8 +61,10 @@ async function Process_Auth_Complete(message, sendResponse)
         },
         uid: message.user.uid,
         idToken: message._tokenResponse.idToken,
+        refreshToken: message._tokenResponse.refreshToken,
         authProvider: message._tokenResponse.providerId
     }
+    console.log(message._tokenResponse)
 
     chrome.storage.local.set(userObj)
     chrome.runtime.sendMessage({target: "POPUP", content: "AUTH_SUCCESS", user: userObj})

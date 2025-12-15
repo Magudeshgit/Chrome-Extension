@@ -14,9 +14,9 @@ import { useNavigate } from "react-router"
 import { RoundSpinner } from "./ui/spinner"
 import { useState } from "react"
 
-import Create_mgaccount from "./create_mgaccount"
+import { Create_mgaccount } from "./create_mgaccount"
 
-export function LoginForm({className,...props})
+export function Signin({className,...props})
  {
   const {authData, setauthData} = useAuth()
   const [loading, setLoading] = useState(false)
@@ -61,12 +61,12 @@ export function LoginForm({className,...props})
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div>
-      {!(accountMode.status)?
+      {!accountMode.status?
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Get Started!</CardTitle>
+          <CardTitle className="text-xl">Welcome Back</CardTitle>
           <CardDescription>
-            Create your Account to Sync Tabs
+            Log in to Continue
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -80,7 +80,7 @@ export function LoginForm({className,...props})
                       d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
                       fill="currentColor" />
                   </svg>
-                  Sign up with Google
+                  Sign in with Google
                   {loading?<RoundSpinner/>:<></>}
                 </Button>
               </div>
@@ -98,12 +98,18 @@ export function LoginForm({className,...props})
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" type="email" placeholder="m@example.com" required />
                 </div>
-                <Button type="submit" className="w-full cursor-pointer" onClick={()=>navigate("/createmgaccount")}>
-                  Create Account
+                <div className="grid gap-3">
+                  <Label htmlFor="pass">Password</Label>
+                  <Input id="pass" type="password" required />
+                </div>
+                <Button type="submit" className="w-full cursor-pointer" onClick={()=>{
+                  setaccountMode({status: true, email: document.querySelector('#email').value})
+                  }}>
+                  Sign In
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Already have an account?{" "}
+                Don't have an account?{" "}
                 <a className="underline underline-offset-4 cursor-pointer" onClick={()=>{
                   setaccountMode(
                     {
